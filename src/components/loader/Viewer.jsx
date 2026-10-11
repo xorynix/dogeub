@@ -141,13 +141,22 @@ const Viewer = ({ conf = {} }) => {
   }, [activeFrameRef, conf.zoom]);
 
   useEffect(() => {
-    tabs.forEach((tab) => {
-      if (tab.active) {
-        const iframeRef = { current: frameRefs.current[tab.id] };
-        updateActiveFrameRef(iframeRef);
-      }
-    });
-  }, [tabs]);
+    const activeTab = tabs.find((tab) => tab.active);
+    if (activeTab) {
+      const iframeRef = { current: frameRefs.current[activeTab.id] };
+      updateActiveFrameRef(iframeRef);
+    }
+
+    // The parent page cannot inspect YouTube's cross-origin iframe media element.
+    // Send the active browser tab's metadata so the taskbar island can still identify YouTube.
+    const url = activeTab?.url || '';
+    const isYouTube = /(^|\.)youtube\.com|(^|\.)youtu\.be/i.test(url.replace(/^https?:\/\//i, '').split('/')[0]);
+    window.dispatchEvent(new CustomEvent('dogeub-browser-media', {
+      detail: isYouTube
+        ? { title: activeTab?.title && activeTab.title !== 'New Tab' ? activeTab.title.replace(/\s*-\s*YouTube\s*$/i, '') : 'YouTube video', artist: 'YouTube · Browser', playing: true, hasMedia: true }
+        : { title: '', artist: '', playing: false, hasMedia: false },
+    }));
+  }, [tabs, updateActiveFrameRef]);
 
   const activeNewTab = tabs.find((tab) => tab.url === 'tabs://new' && tab.active);
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 220" role="img" aria-labelledby="title">
+<title id="title">DOGEUB OS</title>
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient></defs>
+<rect x="12" y="30" width="154" height="154" rx="38" fill="url(#g)"/>
+<path d="M52 67h40c35 0 55 21 55 40s-20 40-55 40H52V67zm34 25v30h8c14 0 22-5 22-15s-8-15-22-15h-8z" fill="#fff"/>
+<text x="196" y="143" fill="#f2f9ff" font-family="Arial, Helvetica, sans-serif" font-size="106" font-weight="800" letter-spacing="1">DOGEUB</text>
+<text x="690" y="143" fill="#38bdf8" font-family="Arial, Helvetica, sans-serif" font-size="106" font-weight="800" letter-spacing="1">OS</text>
+</svg>

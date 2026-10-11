@@ -28,7 +28,7 @@ const scrwlist = new Set([
   )
 ]);
 
-export const process = (input, decode = false, prType, engine = "https://www.google.com/search?q=") => {
+export const process = (input, decode = false, prType, engine = "https://www.bing.com/search?q=") => {
   const upwefix = '/portal/k12/';
   const eggowaffle = '/ham/';
   

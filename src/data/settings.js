@@ -8,6 +8,7 @@ import {
   designConfig,
 } from '/src/utils/config';
 import { exportSettings, importSettings } from '/src/utils/settingsExport';
+import { PATCH_LOGS_KEY, isPatchLogsEnabled } from '/src/components/PatchLogs';
 
 export const privacyConfig = ({ options, updateOption, openPanic }) => {
   const isCustom = options.isCustomCloak || (options.tabName && !meta.find(c => c.value.tabName === options.tabName));
@@ -163,6 +164,68 @@ export const customizeConfig = ({ options, updateOption }) => ({
     value: options.shrinkHeader ?? false,
     type: 'switch',
     action: (b) => setTimeout(() => updateOption({ shrinkHeader: b }), 100),
+  },
+  8: {
+    name: 'Popular Websites Widget',
+    desc: 'Show a homepage widget ranking websites you open from your DOGEUB shortcuts.',
+    value: options.popularSitesWidget ?? true,
+    type: 'switch',
+    action: (b) => updateOption({ popularSitesWidget: b }),
+  },
+  10: {
+    name: 'Most Played Games Widget',
+    desc: 'Show a homepage widget for games launched through DOGEUB when game activity tracking is available.',
+    value: options.mostPlayedGamesWidget ?? true,
+    type: 'switch',
+    action: (b) => updateOption({ mostPlayedGamesWidget: b }),
+  },
+  9: {
+    name: 'Pet Buddy',
+    desc: 'Show a tiny animated animal buddy that pops up with random cute messages.',
+    value: options.petBuddyEnabled ?? false,
+    type: 'switch',
+    action: (b) => setTimeout(() => updateOption({ petBuddyEnabled: b }), 100),
+  },
+  10: {
+    name: 'Pet Buddy Animal',
+    desc: 'Choose which little animal hangs out on your screen.',
+    config: [
+      { option: '🐱 Cat — Mochi', value: { petBuddyAnimal: 'cat' } },
+      { option: '🐶 Dog — Biscuit', value: { petBuddyAnimal: 'dog' } },
+      { option: '🐰 Bunny — Bunbun', value: { petBuddyAnimal: 'bunny' } },
+      { option: '🦊 Fox — Pip', value: { petBuddyAnimal: 'fox' } },
+      { option: '🐻 Bear — Honey', value: { petBuddyAnimal: 'bear' } },
+      { option: '🐼 Panda — Bamboo', value: { petBuddyAnimal: 'panda' } },
+      { option: '🐧 Penguin — Pebble', value: { petBuddyAnimal: 'penguin' } },
+      { option: '🐸 Frog — Sprout', value: { petBuddyAnimal: 'frog' } },
+      { option: '🦆 Duck — Waffles', value: { petBuddyAnimal: 'duck' } },
+      { option: '🦫 Capybara — Cappy', value: { petBuddyAnimal: 'capybara' } },
+    ],
+    value: find([
+      { option: 'Cat', value: { petBuddyAnimal: 'cat' } },
+      { option: 'Dog', value: { petBuddyAnimal: 'dog' } },
+      { option: 'Bunny', value: { petBuddyAnimal: 'bunny' } },
+      { option: 'Fox', value: { petBuddyAnimal: 'fox' } },
+      { option: 'Bear', value: { petBuddyAnimal: 'bear' } },
+      { option: 'Panda', value: { petBuddyAnimal: 'panda' } },
+      { option: 'Penguin', value: { petBuddyAnimal: 'penguin' } },
+      { option: 'Frog', value: { petBuddyAnimal: 'frog' } },
+      { option: 'Duck', value: { petBuddyAnimal: 'duck' } },
+      { option: 'Capybara', value: { petBuddyAnimal: 'capybara' } },
+    ], (c) => c.value.petBuddyAnimal === (options.petBuddyAnimal || 'cat'), 0),
+    type: 'select',
+    action: (a) => updateOption(a),
+  },
+  8: {
+    name: 'Show patch logs on load',
+    desc: 'Show the Patch Logs panel listing recent changes every time the site loads.',
+    value: isPatchLogsEnabled(),
+    type: 'switch',
+    action: (b) => {
+      try {
+        localStorage.setItem(PATCH_LOGS_KEY, String(b));
+      } catch {}
+    },
   },
 });
 

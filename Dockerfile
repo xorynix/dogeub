@@ -34,6 +34,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/public ./public
 COPY --from=build /app/server.js ./server.js
+COPY --from=build /app/messagesApi.js ./messagesApi.js
 
 # Optional files seen in repo root (safe to include)
 COPY --from=build /app/masqr.js ./masqr.js

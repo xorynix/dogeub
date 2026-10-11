@@ -7,6 +7,7 @@ import Pagination from '../components/Pagination';
 import styles from '../styles/apps.module.css';
 import theme from '../styles/theming.module.css';
 import clsx from 'clsx';
+import { adjustApps } from '../data/appsFilter';
 
 const SORT_OPTIONS = [
   { value: 'categorical', label: 'Categorical' },
@@ -58,7 +59,7 @@ const Apps = memo(() => {
   const [appsList, setAppsList] = useState([]);
   useEffect(() => {
     let a = true;
-    import('../data/apps.json').then((m) => a && setAppsList(m.default?.apps || []));
+    import('../data/apps.json').then((m) => a && setAppsList(adjustApps(m.default?.apps)));
     return () => {
       a = false;
     };
@@ -115,6 +116,16 @@ const Apps = memo(() => {
   const navApp = useCallback(
     (app) => {
       if (!app) return;
+      const appName = String(app.appName || '');
+      const appUrl = String(app.url || '');
+      const looksLikeGame = /game|roblox|minecraft|fnf|slope|retro|geometry|cookie|drift|racing|among us|subway|mario|sonic|pokemon|2048|idle|run 3/i.test(appName);
+      if (looksLikeGame) {
+        try {
+          window.dispatchEvent(new CustomEvent('dogeub-game-launched', {
+            detail: { id: appName.toLowerCase(), name: appName, url: appUrl, icon: app.icon || '' },
+          }));
+        } catch {}
+      }
       nav("/search", {
         state: {
           url: app.url,
