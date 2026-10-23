@@ -2,7 +2,8 @@ import clsx from 'clsx';
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import Nav from '../layouts/Nav';
 import theme from '../styles/theming.module.css';
-import { Search, HatGlasses, Palette, Globe, Wrench } from 'lucide-react';
+import { Search, HatGlasses, Palette, Globe, Wrench, ShieldCheck } from 'lucide-react';
+import AdminPanel from '../components/AdminPanel';
 import { useOptions } from '/src/utils/optionsContext';
 import RenderSetting from '../components/Settings';
 
@@ -194,11 +195,33 @@ const Settings = () => {
                 </div>
               );
             })}
+            {(!fq || 'admin panel administrator control center'.includes(fq)) && (
+              <div
+                key="Admin Panel"
+                className={clsx(
+                  'w-full flex flex-col rounded-xl duration-75 cursor-pointer px-5 py-2',
+                  content !== 'Admin Panel' && 'bg-transparent hover:bg-[#ffffff23]',
+                )}
+                style={{
+                  backgroundColor:
+                    content === 'Admin Panel'
+                      ? options.settingsPanelItemBackgroundColor || '#405a77'
+                      : undefined,
+                }}
+                onClick={() => setContent((prev) => (prev === 'Admin Panel' ? '' : 'Admin Panel'))}
+              >
+                <div className="flex items-center h-6">
+                  <ShieldCheck className="w-5 text-cyan-300" />
+                  <p className="mx-4">Admin Panel</p>
+                </div>
+                <p className="ml-9 text-[10px] text-cyan-200/65">Restricted controls</p>
+              </div>
+            )}
           </div>
         </div>
 
         {loaded ? (
-          <RenderSetting setting={content} />
+          content === 'Admin Panel' ? <AdminPanel /> : <RenderSetting setting={content} />
         ) : (
           <div className="flex-1 flex items-center justify-center text-sm">Loading...</div>
         )}

@@ -1,0 +1,18 @@
+{
+  "name": "DOGEUB Lite",
+  "short_name": "DOGEUB Lite",
+  "description": "Lightweight, installable DOGEUB game catalog and AI chat.",
+  "start_url": "/lite/",
+  "scope": "/lite/",
+  "display": "standalone",
+  "background_color": "#08111f",
+  "theme_color": "#08111f",
+  "icons": [
+    {
+      "src": "/logo-os.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

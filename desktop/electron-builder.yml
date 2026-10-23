@@ -1,0 +1,36 @@
+appId: dev.dogeub.lite
+productName: DOGEUB Lite
+asar: true
+directories:
+  output: release
+files:
+  - main.cjs
+  - ai-endpoint.json
+extraResources:
+  - from: ../dist
+    to: dist
+    filter:
+      - "**/*"
+  - from: ai-endpoint.json
+    to: ai-endpoint.json
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: DOGEUB-Lite-Windows-x64-Setup.exe
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+linux:
+  category: Game
+  target:
+    - target: AppImage
+      arch:
+        - x64
+    - target: deb
+      arch:
+        - x64
+  artifactName: DOGEUB-Lite-ChromeOS-Linux-x64.${ext}

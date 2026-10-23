@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08111f">
+  <title>Download DOGEUB Lite</title>
+  <style>
+    :root{color-scheme:dark;--bg:#08111f;--panel:#101c2d;--line:#28394e;--text:#eef6ff;--muted:#9aacc2;--cyan:#67e8f9}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 20% -10%,#12324b 0,transparent 45%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+    main{width:min(940px,calc(100% - 28px));margin:0 auto;padding:42px 0 64px}.brand{color:var(--cyan);font-size:12px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+    h1{font-size:clamp(32px,6vw,50px);line-height:1.04;letter-spacing:-.04em;margin:12px 0}.lede{max-width:650px;color:var(--muted);margin:0 0 26px}
+    .recommend{border:1px solid #67e8f948;background:#67e8f909;border-radius:18px;padding:20px;margin-bottom:18px}.recommend small{color:var(--cyan);font-weight:800;text-transform:uppercase;letter-spacing:.12em}
+    .recommend h2{font-size:20px;margin:7px 0}.recommend p{color:var(--muted);margin:0 0 15px}.button{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid var(--line);border-radius:12px;background:#ffffff08;color:var(--text);padding:11px 14px;font-weight:750;gap:8px}.button.primary{background:linear-gradient(120deg,#0891b2,#2563eb);border-color:transparent;color:white}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}.card{border:1px solid var(--line);border-radius:16px;background:#101c2db8;padding:17px;display:flex;flex-direction:column;gap:7px}.card h3{margin:0;font-size:17px}.card p{color:var(--muted);font-size:13px;margin:0 0 8px;flex:1}.meta{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .note{margin-top:18px;border-left:3px solid #fbbf24;padding:8px 12px;color:var(--muted);font-size:13px}.footer{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.footer a{color:var(--cyan)}
+  </style>
+</head>
+<body>
+<main>
+  <div class="brand">🐕 DOGEUB LITE</div>
+  <h1>One download.<br>Pick your device.</h1>
+  <p class="lede">The desktop build bundles DOGEUB Lite and its game catalog so the app opens from a file installed on your computer. AI responses and game websites need an internet connection.</p>
+  <section class="recommend" aria-live="polite">
+    <small>Recommended for this device</small>
+    <h2 id="detected-title">Choose your platform</h2>
+    <p id="detected-description">Detecting your operating system…</p>
+    <a class="button primary" id="recommended-download" href="https://github.com/2122pspblore-dev/dogeub/releases/latest">View latest release ↗</a>
+  </section>
+  <section class="grid" aria-label="All downloads">
+    <article class="card">
+      <div class="meta">Windows 10 / 11 · x64</div><h3>Windows installer</h3>
+      <p>Run the setup file, finish installation, then launch DOGEUB Lite from Start or your desktop.</p>
+      <a class="button" href="https://github.com/2122pspblore-dev/dogeub/releases/latest/download/DOGEUB-Lite-Windows-x64-Setup.exe">Download .exe</a>
+    </article>
+    <article class="card">
+      <div class="meta">Chromebook · Linux enabled</div><h3>ChromeOS package</h3>
+      <p>Requires the Linux development environment. Open the downloaded .deb file in the Linux files area to install it. School-managed devices may disable Linux apps.</p>
+      <a class="button" href="https://github.com/2122pspblore-dev/dogeub/releases/latest/download/DOGEUB-Lite-ChromeOS-Linux-x64.deb">Download .deb</a>
+    </article>
+    <article class="card">
+      <div class="meta">Linux x64</div><h3>Portable Linux app</h3>
+      <p>The AppImage option is a portable Linux executable. Some Linux setups require extra system support for AppImage.</p>
+      <a class="button" href="https://github.com/2122pspblore-dev/dogeub/releases/latest/download/DOGEUB-Lite-ChromeOS-Linux-x64.AppImage">Download AppImage</a>
+    </article>
+  </section>
+  <p class="note">Windows .exe files do not run directly on ChromeOS. The app includes normal online game links; it does not bypass school or network restrictions. If a download link says “not found,” the first GitHub Release has not been published yet.</p>
+  <div class="footer"><a href="https://github.com/2122pspblore-dev/dogeub/releases/latest">All release files</a><a href="https://github.com/2122pspblore-dev/dogeub">Source code</a></div>
+</main>
+<script>
+(function(){
+  const base='https://github.com/2122pspblore-dev/dogeub/releases/latest/download/';
+  const ua=navigator.userAgent||'';
+  let title='Select your platform', description='Choose a download below.', href='https://github.com/2122pspblore-dev/dogeub/releases/latest', label='View latest release ↗';
+  if(/CrOS/i.test(ua)){
+    title='Chromebook detected';description='Use the Linux .deb package after enabling the Linux development environment. If Linux is disabled by your administrator, a native desktop build will not run on this device.';href=base+'DOGEUB-Lite-ChromeOS-Linux-x64.deb';label='Download for Chromebook (.deb)';
+  }else if(/Windows/i.test(ua)){
+    title='Windows detected';description='Download the Windows x64 installer and run it to install DOGEUB Lite.';href=base+'DOGEUB-Lite-Windows-x64-Setup.exe';label='Download for Windows (.exe)';
+  }else if(/Linux/i.test(ua)){
+    title='Linux detected';description='The .deb package is easiest on Debian-based Linux. AppImage is also available.';href=base+'DOGEUB-Lite-ChromeOS-Linux-x64.deb';label='Download Linux package (.deb)';
+  }else if(/Macintosh|Mac OS/i.test(ua)){
+    title='macOS detected';description='A macOS installer is not included yet. Check the releases page for supported builds.';href='https://github.com/2122pspblore-dev/dogeub/releases/latest';label='View available releases ↗';
+  }
+  document.getElementById('detected-title').textContent=title;
+  document.getElementById('detected-description').textContent=description;
+  const link=document.getElementById('recommended-download');link.href=href;link.textContent=label;
+})();
+</script>
+</body>
+</html>

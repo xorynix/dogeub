@@ -1,0 +1,51 @@
+import { useEffect, useMemo, useState } from 'react';
+import { BookOpen, Check, Clock3, Plus, RotateCcw, Trash2 } from 'lucide-react';
+import Nav from '../layouts/Nav';
+
+function readValue(key, fallback) { try { const value = localStorage.getItem(key); return value ? JSON.parse(value) : fallback; } catch { return fallback; } }
+const INITIAL_CARDS = [
+  { id: 'card-1', front: 'What does CPU stand for?', back: 'Central Processing Unit.' },
+  { id: 'card-2', front: 'What is 7 × 8?', back: '56.' },
+  { id: 'card-3', front: 'What is the purpose of a thesis statement?', back: 'It states the main point or claim of an essay.' },
+];
+export default function StudentCenter() {
+  const [tasks, setTasks] = useState(() => readValue('dogeub-student-tasks', []));
+  const [taskText, setTaskText] = useState('');
+  const [subject, setSubject] = useState('General');
+  const [cards, setCards] = useState(() => readValue('dogeub-student-cards', INITIAL_CARDS));
+  const [front, setFront] = useState('');
+  const [back, setBack] = useState('');
+  const [cardIndex, setCardIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [seconds, setSeconds] = useState(25 * 60);
+  const [running, setRunning] = useState(false);
+  const [focusSessions, setFocusSessions] = useState(() => readValue('dogeub-focus-sessions', 0));
+  useEffect(() => { try { localStorage.setItem('dogeub-student-tasks', JSON.stringify(tasks)); } catch {} }, [tasks]);
+  useEffect(() => { try { localStorage.setItem('dogeub-student-cards', JSON.stringify(cards)); } catch {} }, [cards]);
+  useEffect(() => { try { localStorage.setItem('dogeub-focus-sessions', JSON.stringify(focusSessions)); } catch {} }, [focusSessions]);
+  useEffect(() => { if (!running) return undefined; const id = window.setInterval(() => setSeconds((value) => Math.max(0, value - 1)), 1000); return () => window.clearInterval(id); }, [running]);
+  useEffect(() => { if (seconds === 0 && running) { setRunning(false); setFocusSessions((value) => value + 1); } }, [seconds, running]);
+  const completed = tasks.filter((item) => item.done).length;
+  const currentCard = cards.length ? cards[((cardIndex % cards.length) + cards.length) % cards.length] : null;
+  const addTask = (event) => { event.preventDefault(); if (!taskText.trim()) return; setTasks((value) => [{ id: Date.now(), text: taskText.trim().slice(0, 180), subject, done: false, createdAt: Date.now() }, ...value].slice(0, 200)); setTaskText(''); };
+  const addCard = (event) => { event.preventDefault(); if (!front.trim() || !back.trim()) return; setCards((value) => [...value, { id: 'custom-' + Date.now(), front: front.trim().slice(0, 240), back: back.trim().slice(0, 500) }].slice(-100)); setFront(''); setBack(''); };
+  const clock = String(Math.floor(seconds / 60)).padStart(2, '0') + ':' + String(seconds % 60).padStart(2, '0');
+  const grouped = useMemo(() => [...new Set(tasks.map((item) => item.subject))], [tasks]);
+  return <div className="min-h-screen text-white"><Nav /><main className="mx-auto max-w-7xl px-4 py-8 sm:px-7">
+    <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-cyan-300">Student Center</p><h1 className="text-3xl font-bold sm:text-4xl">Plan it. Learn it. Finish it.</h1><p className="mt-2 max-w-2xl text-sm text-slate-300">An easy homework planner, focus timer, and flashcard deck. Your entries stay in this browser.</p>
+    <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(300px,.65fr)]">
+      <section className="rounded-3xl border border-white/10 bg-slate-950/50 p-5"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="flex items-center gap-2 text-xl font-semibold"><Check size={19} className="text-cyan-300" /> Homework planner</h2><span className="rounded-full border border-white/10 px-3 py-1 text-sm">{completed}/{tasks.length} complete</span></div><div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-cyan-300" style={{ width: (tasks.length ? completed / tasks.length * 100 : 0) + '%' }} /></div>
+        <form onSubmit={addTask} className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_145px_auto]"><input value={taskText} onChange={(event) => setTaskText(event.target.value)} maxLength={180} placeholder="What do you need to finish?" className="min-w-0 rounded-xl border border-white/10 bg-black/20 p-3 text-sm outline-none focus:border-cyan-300/50" /><select value={subject} onChange={(event) => setSubject(event.target.value)} className="rounded-xl border border-white/10 bg-slate-950 p-3 text-sm">{['General','Math','Science','English','History','Computer Science','Other'].map((item) => <option key={item}>{item}</option>)}</select><button type="submit" className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-3 text-sm font-bold text-slate-950"><Plus size={15} /> Add</button></form>
+        <div className="mt-4 space-y-2">{tasks.map((task) => <div key={task.id} className="flex items-start gap-3 rounded-2xl border border-white/10 p-3"><input type="checkbox" checked={task.done} onChange={(event) => setTasks((value) => value.map((item) => item.id === task.id ? { ...item, done: event.target.checked } : item))} className="mt-1 accent-cyan-300" /><div className="min-w-0 flex-1"><p className={'break-words text-sm ' + (task.done ? 'text-slate-500 line-through' : 'text-white')}>{task.text}</p><p className="mt-1 text-xs text-slate-500">{task.subject}</p></div><button onClick={() => setTasks((value) => value.filter((item) => item.id !== task.id))} aria-label="Delete task" className="text-slate-500 hover:text-rose-300"><Trash2 size={15} /></button></div>)}{tasks.length === 0 && <p className="rounded-xl border border-dashed border-white/10 p-8 text-center text-sm text-slate-500">Add your first assignment above.</p>}</div>
+        {grouped.length > 1 && <button onClick={() => setTasks((value) => value.filter((item) => !item.done))} className="mt-3 text-sm text-cyan-200 hover:text-white">Clear completed tasks</button>}
+      </section>
+      <section className="rounded-3xl border border-white/10 bg-slate-950/50 p-5"><h2 className="flex items-center gap-2 text-xl font-semibold"><Clock3 size={19} className="text-cyan-300" /> Focus timer</h2><p className="mt-4 text-center text-6xl font-semibold tabular-nums">{clock}</p><p className="mt-2 text-center text-sm text-slate-400">{running ? 'Focus time is running.' : seconds === 0 ? 'Session complete. Nice work.' : 'Start with a manageable focus block.'}</p><div className="mt-5 flex justify-center gap-2"><button disabled={seconds === 0} onClick={() => setRunning((value) => !value)} className="rounded-xl bg-cyan-300 px-5 py-2 text-sm font-bold text-slate-950 disabled:opacity-40">{running ? 'Pause' : 'Start'}</button><button onClick={() => { setSeconds(25 * 60); setRunning(false); }} className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 text-sm hover:bg-white/10"><RotateCcw size={14} /> Reset</button></div><div className="mt-5 grid grid-cols-2 gap-2"><button onClick={() => { setSeconds(5 * 60); setRunning(false); }} className="rounded-xl border border-white/10 p-2 text-sm hover:bg-white/10">5 min break</button><button onClick={() => { setSeconds(15 * 60); setRunning(false); }} className="rounded-xl border border-white/10 p-2 text-sm hover:bg-white/10">15 min sprint</button></div><p className="mt-5 rounded-xl bg-white/[0.04] p-3 text-sm text-slate-300">Completed sessions: <strong className="text-white">{focusSessions}</strong></p></section>
+    </div>
+    <section className="mt-5 rounded-3xl border border-white/10 bg-slate-950/50 p-5"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="flex items-center gap-2 text-xl font-semibold"><BookOpen size={19} className="text-cyan-300" /> Flashcards</h2><span className="text-sm text-slate-400">{cards.length ? cardIndex % cards.length + 1 : 0} / {cards.length}</span></div>
+      {currentCard ? <button onClick={() => setFlipped((value) => !value)} className="mt-4 flex min-h-40 w-full flex-col items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.05] p-6 text-center hover:bg-cyan-300/[0.09]"><span className="text-xs font-bold uppercase tracking-widest text-cyan-300">{flipped ? 'Answer' : 'Question'} · click to flip</span><span className="mt-3 text-lg font-semibold leading-7">{flipped ? currentCard.back : currentCard.front}</span></button> : <p className="mt-4 rounded-2xl border border-dashed border-white/10 p-7 text-center text-sm text-slate-400">Add a card below to start revising.</p>}
+      <div className="mt-3 flex gap-2"><button onClick={() => { setCardIndex((value) => value - 1); setFlipped(false); }} disabled={!cards.length} className="rounded-xl border border-white/10 px-4 py-2 text-sm disabled:opacity-40">Previous</button><button onClick={() => { setCardIndex((value) => value + 1); setFlipped(false); }} disabled={!cards.length} className="rounded-xl border border-white/10 px-4 py-2 text-sm disabled:opacity-40">Next</button></div>
+      <form onSubmit={addCard} className="mt-5 grid gap-3 sm:grid-cols-2"><label className="text-sm text-slate-300">Question<input value={front} onChange={(event) => setFront(event.target.value)} maxLength={240} className="mt-1 block w-full rounded-xl border border-white/10 bg-black/20 p-3" /></label><label className="text-sm text-slate-300">Answer<input value={back} onChange={(event) => setBack(event.target.value)} maxLength={500} className="mt-1 block w-full rounded-xl border border-white/10 bg-black/20 p-3" /></label><button className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950 sm:col-span-2"><Plus size={15} /> Add flashcard</button></form>
+      <div className="mt-4 flex flex-wrap gap-2">{cards.filter((item) => item.id.startsWith('custom-')).map((item) => <button key={item.id} onClick={() => setCards((value) => value.filter((card) => card.id !== item.id))} className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-xs text-slate-300 hover:text-rose-200">Remove card <Trash2 size={12} /></button>)}</div>
+    </section>
+  </main></div>;
+}

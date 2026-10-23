@@ -1,0 +1,14 @@
+{
+  "name": "dogeub-lite-desktop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portable DOGEUB Lite desktop app",
+  "main": "main.cjs",
+  "scripts": {
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12"
+  }
+}

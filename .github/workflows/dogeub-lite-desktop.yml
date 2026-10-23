@@ -1,0 +1,108 @@
+name: DOGEUB Lite desktop installers
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/dogeub-lite-desktop-release
+    tags:
+      - "lite-v*"
+  pull_request:
+    paths:
+      - "desktop/**"
+      - "download/**"
+      - "lite/**"
+      - "src/lite/**"
+      - "src/data/apps.json"
+      - "vite.config.js"
+      - ".github/workflows/dogeub-lite-desktop.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    name: Windows x64 installer
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install web dependencies
+        run: npm ci
+      - name: Build app and bundled catalog
+        run: npm run build
+      - name: Configure hosted Doge AI endpoint
+        shell: bash
+        env:
+          DOGEUB_LITE_AI_ENDPOINT: ${{ vars.DOGEUB_LITE_AI_ENDPOINT }}
+        run: node -e "require('node:fs').writeFileSync('desktop/ai-endpoint.json', JSON.stringify({endpoint:process.env.DOGEUB_LITE_AI_ENDPOINT||''}, null, 2)+'\\n')"
+      - name: Install desktop packager
+        run: npm install --prefix desktop
+      - name: Package Windows installer
+        run: npm --prefix desktop run dist -- --win nsis
+      - name: Upload Windows installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: DOGEUB-Lite-Windows-x64
+          path: desktop/release/DOGEUB-Lite-Windows-x64-Setup.exe
+          if-no-files-found: error
+          retention-days: 30
+
+  chromeos-linux:
+    name: ChromeOS Linux x64 packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install web dependencies
+        run: npm ci
+      - name: Build app and bundled catalog
+        run: npm run build
+      - name: Configure hosted Doge AI endpoint
+        shell: bash
+        env:
+          DOGEUB_LITE_AI_ENDPOINT: ${{ vars.DOGEUB_LITE_AI_ENDPOINT }}
+        run: node -e "require('node:fs').writeFileSync('desktop/ai-endpoint.json', JSON.stringify({endpoint:process.env.DOGEUB_LITE_AI_ENDPOINT||''}, null, 2)+'\\n')"
+      - name: Install desktop packager
+        run: npm install --prefix desktop
+      - name: Package ChromeOS-compatible Linux apps
+        run: npm --prefix desktop run dist -- --linux AppImage deb
+      - name: Upload ChromeOS/Linux packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: DOGEUB-Lite-ChromeOS-Linux-x64
+          path: |
+            desktop/release/DOGEUB-Lite-ChromeOS-Linux-x64.AppImage
+            desktop/release/DOGEUB-Lite-ChromeOS-Linux-x64.deb
+          if-no-files-found: error
+          retention-days: 30
+
+  publish-release:
+    name: Publish release assets
+    if: startsWith(github.ref, 'refs/tags/lite-v')
+    needs:
+      - windows
+      - chromeos-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download installer artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+          merge-multiple: true
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: DOGEUB Lite ${{ github.ref_name }}
+          generate_release_notes: true
+          files: release-assets/*
