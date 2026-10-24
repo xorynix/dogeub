@@ -186,6 +186,15 @@ const Games = memo(() => {
   const navApp = useCallback(
     (app) => {
       if (!app) return;
+      try {
+        const firstUrl = Array.isArray(app.url) ? app.url[0] : app.url;
+        window.dispatchEvent(new CustomEvent('dogeub-game-launched', { detail: {
+          id: String(app.appName || firstUrl || 'unknown-game'),
+          name: String(app.appName || 'Unknown game'),
+          url: firstUrl || '',
+          icon: app.icon || '',
+        } }));
+      } catch {}
       nav('/docs/r/', { state: { app } });
     },
     [nav],

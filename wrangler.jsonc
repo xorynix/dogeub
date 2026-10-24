@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "schoolstudy",
+  "main": "./worker.js",
+  "compatibility_date": "2026-10-21",
+  "vars": {
+    "API_ORIGIN": "https://studylive.up.railway.app"
+  },
+  "ai": {
+    "binding": "AI"
+  },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
+    "not_found_handling": "single-page-application"
+  }
+}

@@ -39,6 +39,20 @@ npm run build
 node server.js
 ```
 
+### DOGEUB Messages storage
+
+Doge Messages uses the Node server API for accounts, global chat, private conversations, profile pictures, moderation reports, and attachments. It does not use browser-local-only storage for messages.
+
+For persistent production data, attach a writable persistent volume to the service (for example, mount it at `/data`) and set:
+
+```env
+DOGEUB_DATA_DIR=/data/dogeub-messages
+```
+
+The directory must be writable by the Node process. It holds the JSON account/message database, uploaded attachments, profile pictures, and the generated session-signing key. If `DOGEUB_DATA_DIR` and `RAILWAY_VOLUME_MOUNT_PATH` are not configured, the API falls back to a temporary directory; data can be lost when that environment is replaced. Back up the volume regularly. Message attachments are limited to 4 MB and profile pictures to 512 KB.
+
+During Vite development, the `/api/messages` proxy targets `http://localhost:2345` by default. Run the Node server on that port as well, and override `DOGEUB_API_PROXY` if your API server uses a different address.
+
 #### Development:
 
 ```bash

@@ -7,6 +7,7 @@ import Pagination from '../components/Pagination';
 import styles from '../styles/apps.module.css';
 import theme from '../styles/theming.module.css';
 import clsx from 'clsx';
+import { adjustApps } from '../data/appsFilter';
 
 const SORT_OPTIONS = [
   { value: 'categorical', label: 'Categorical' },
@@ -58,7 +59,7 @@ const Apps = memo(() => {
   const [appsList, setAppsList] = useState([]);
   useEffect(() => {
     let a = true;
-    import('../data/apps.json').then((m) => a && setAppsList(m.default?.apps || []));
+    import('../data/apps.json').then((m) => a && setAppsList(adjustApps(m.default?.apps)));
     return () => {
       a = false;
     };
@@ -115,6 +116,16 @@ const Apps = memo(() => {
   const navApp = useCallback(
     (app) => {
       if (!app) return;
+      const appName = String(app.appName || '');
+      const appUrl = String(app.url || '');
+      const looksLikeGame = /game|roblox|minecraft|fnf|slope|retro|geometry|cookie|drift|racing|among us|subway|mario|sonic|pokemon|2048|idle|run 3/i.test(appName);
+      if (looksLikeGame) {
+        try {
+          window.dispatchEvent(new CustomEvent('dogeub-game-launched', {
+            detail: { id: appName.toLowerCase(), name: appName, url: appUrl, icon: app.icon || '' },
+          }));
+        } catch {}
+      }
       nav("/search", {
         state: {
           url: app.url,
@@ -145,8 +156,9 @@ const Apps = memo(() => {
     <div className={`${styles.appContainer} w-full mx-auto`}>
       <div className="w-full px-4 py-4 flex justify-center mt-3">
         <div
+          data-app-search="true"
           className={clsx(
-            'relative flex items-center gap-2.5 rounded-[10px] px-3 w-[600px] h-11',
+            'relative flex items-center gap-2.5 rounded-[10px] px-3 w-[600px] h-11 max-w-[calc(100vw-2rem)]',
             searchBarCls,
           )}
         >

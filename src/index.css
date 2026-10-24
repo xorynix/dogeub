@@ -2,6 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @font-face {
   font-family: 'SFProText';
@@ -32,4 +33,149 @@ body {
   font-size: 14px;
   font-weight: 500;
   user-select: none;
+}
+
+html,
+body,
+#root {
+  max-width: 100%;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+
+/* Adaptive shell modes are driven by the device mode in OptionsProvider. */
+html[data-device-mode='mobile'] [data-device-nav] {
+  height: 56px !important;
+  gap: 0.5rem !important;
+  padding-inline: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-nav] #btn-logo {
+  width: 92px !important;
+  height: auto !important;
+}
+
+html[data-device-mode='mobile'] [data-device-version],
+html[data-device-mode='mobile'] [data-device-nav-label] {
+  display: none !important;
+}
+
+html[data-device-mode='mobile'] [data-device-nav-items] {
+  gap: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-nav-item] {
+  justify-content: center;
+}
+
+html[data-device-mode='tablet'] [data-device-nav] {
+  height: 62px !important;
+  gap: 0.75rem !important;
+  padding-inline: 1rem !important;
+}
+
+html[data-device-mode='tablet'] [data-device-nav] #btn-logo {
+  width: 108px !important;
+  height: auto !important;
+}
+
+html[data-device-mode='tablet'] [data-device-nav-items] {
+  gap: 1rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] {
+  height: calc(62px + env(safe-area-inset-bottom)) !important;
+  padding: 0 0.25rem env(safe-area-inset-bottom) !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:first-child {
+  max-width: calc(100% - 62px) !important;
+  gap: 0 !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:first-child > button[aria-label]:not([aria-label='Start']):not([aria-label='Taskbar search']):not([data-mobile-app='true']) {
+  display: none;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child {
+  right: 0.25rem !important;
+  gap: 0 !important;
+  padding: 0 !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child > button[aria-label='Device specs'],
+html[data-device-mode='mobile'] [data-device-taskbar] [role='group'] {
+  display: none !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child > button[aria-label='Quick settings'] svg:first-child {
+  display: block !important;
+}
+
+html[data-device-mode='mobile'] [data-device-notifications] {
+  top: calc(3.75rem + env(safe-area-inset-top)) !important;
+  right: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-workspace] {
+  bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+  left: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-app-search] {
+  width: min(600px, calc(100vw - 2rem)) !important;
+}
+
+html[data-device-mode='mobile'] body {
+  font-size: 15px;
+}
+
+html[data-device-mode='tablet'] [data-device-taskbar] {
+  height: 62px !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:first-child > button {
+  width: 40px !important;
+  height: 42px !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child > button {
+  width: 40px !important;
+  height: 42px !important;
+  justify-content: center !important;
+}
+
+html[data-device-mode='tablet'] [data-device-nav] {
+  font-size: 16px;
+}
+
+html[data-device-mode='tablet'] [data-device-nav-item] {
+  min-height: 44px;
+}
+
+html[data-device-mode='tablet'] [data-device-taskbar] {
+  padding-inline: 0.75rem;
+}
+
+html[data-device-mode='tablet'] [data-device-taskbar] > div:first-child > button,
+html[data-device-mode='tablet'] [data-device-taskbar] > div:last-child > button {
+  min-width: 42px;
+  min-height: 42px;
+  justify-content: center;
+}
+
+[data-device-settings] {
+  height: calc(100dvh - 58px) !important;
+}
+
+html[data-device-mode='mobile'] [data-device-settings] {
+  height: calc(100dvh - 62px - env(safe-area-inset-bottom)) !important;
+}
+
+html[data-device-mode='tablet'] [data-device-settings] {
+  height: calc(100dvh - 62px) !important;
 }

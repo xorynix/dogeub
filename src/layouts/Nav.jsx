@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import NavItem from '../components/NavItem';
-import { LayoutGrid, Gamepad2, Cog } from 'lucide-react';
+import { LayoutGrid, Gamepad2, Cog, Compass, FolderOpen } from 'lucide-react';
 import { useOptions } from '/src/utils/optionsContext';
 import pkg from '../../package.json';
 import nav from '../styles/nav.module.css';
@@ -15,6 +15,8 @@ const itemSize = 16;
 const navItems = [
   { name: 'Apps', id: 'btn-a', type: LayoutGrid, route: '/materials' },
   { name: 'Games', id: 'btn-g', type: Gamepad2, route: '/docs' },
+  { name: 'Recommended', id: 'btn-r', type: Compass, route: '/recommended' },
+  { name: 'Files', id: 'btn-f', type: FolderOpen, route: '/files' },
   { name: 'Settings', id: 'btn-s', type: Cog, route: '/settings' },
 ];
 
@@ -48,6 +50,7 @@ const Nav = memo(() => {
 
   return (
     <div
+      data-device-nav="true"
       className={clsx(
         nav.nav,
         theme['nav-backgroundColor'],
@@ -58,6 +61,7 @@ const Nav = memo(() => {
     >
       <Logo width={dimensions.logoWidth} height={dimensions.logoHeight} action={handleLogoClick} />
       <div
+        data-device-version="true"
         className="border rounded-full text-center"
         style={{
           fontSize: `${dimensions.versionFont}px`,
@@ -68,7 +72,7 @@ const Nav = memo(() => {
       >
         {'v' + version}
       </div>
-      <div className="flex items-center gap-5 ml-auto" style={{ height: 'calc(100% - 0.5rem)' }}>
+      <div data-device-nav-items="true" className="flex items-center gap-5 ml-auto" style={{ height: 'calc(100% - 0.5rem)' }}>
         <NavItem items={items} />
       </div>
     </div>

@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { BareMuxConnection } from 'bare-mux-fork';
 import { useOptions } from '/src/utils/optionsContext';
 import { makecodec } from './of';
+import { resolveWispServer } from './wispServer';
 
 export default function useReg() {
   const { options } = useOptions();
-  const defaultWs = `${location.protocol == 'http:' ? 'ws:' : 'wss:'}//${location.host}/wisp/`;
   const sws = [
     { path: new URL('/sw.js', location.origin).href, scope: new URL('/portal/k12/', location.origin).href },
     { path: new URL('/s_sw.js', location.origin).href, scope: new URL('/ham/', location.origin).href }
@@ -56,7 +56,7 @@ export default function useReg() {
       const connection = new BareMuxConnection(baremuxPath);
 
       const libcurlPath = '/libcurl/index.mjs';
-      const wisp = options.wServer || defaultWs;
+      const wisp = resolveWispServer(options.wServer);
       await connection.setTransport(libcurlPath, [
         {
           wisp: wisp,

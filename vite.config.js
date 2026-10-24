@@ -20,7 +20,41 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 logging.set_level(logging.NONE);
 let bare;
 
-async function remoteApps(urls = ['https://ci.baylib.top/apps.json?t=' + Date.now()]) {
+// Tiles to hide from the remote apps list (matched by exact appName, case-insensitive).
+const HIDDEN_APPS = new Set(['fmhy.net', 'movies/tv', 'google']);
+
+// Tiles added on top of the remote apps list (skipped if an app with the same name already exists).
+const EXTRA_APPS = [
+  {
+    appName: 'Gemini AI',
+    desc: "Google's AI assistant for questions, writing and ideas.",
+    icon: 'https://gemini.google.com/favicon.ico',
+    url: 'https://gemini.google.com',
+    disabled: false,
+  },
+  {
+    appName: 'YouTube',
+    desc: 'Watch and share videos.',
+    icon: 'https://www.youtube.com/favicon.ico',
+    url: 'https://www.youtube.com',
+    disabled: false,
+  },
+];
+
+function removeHiddenApps(data) {
+  const name = (a) => String(a?.appName ?? '').trim().toLowerCase();
+  const keep = (a) => !HIDDEN_APPS.has(name(a));
+  for (const key of ['apps', 'default']) {
+    if (Array.isArray(data?.[key])) data[key] = data[key].filter(keep);
+  }
+  if (Array.isArray(data?.apps)) {
+    const have = new Set(data.apps.map(name));
+    data.apps.push(...EXTRA_APPS.filter((a) => !have.has(name(a))));
+  }
+  return data;
+}
+
+async function remoteApps(urls =['https://ci.baylib.top/apps.json?t=' + Date.now()]) {
   const list = Array.isArray(urls) ? urls : [urls];
   let lastErr;
 
@@ -32,7 +66,7 @@ async function remoteApps(urls = ['https://ci.baylib.top/apps.json?t=' + Date.no
         throw new Error(`apps.json ${res.status}`);
       }
 
-      return JSON.stringify(await res.json());
+      return JSON.stringify(removeHiddenApps(await res.json()));
     } catch (e) {
       lastErr = e;
     }
@@ -200,6 +234,10 @@ export default defineConfig(({ command }) => {
     },
     server: {
       proxy: {
+        '/api/messages': {
+          target: process.env.DOGEUB_API_PROXY || 'http://localhost:2345',
+          changeOrigin: true,
+        },
         '/assets/img': {
           target: 'https://dogeub-assets.pages.dev',
           changeOrigin: true,
