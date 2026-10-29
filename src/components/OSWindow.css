@@ -1,0 +1,182 @@
+/* DOGEUB OS floating app window */
+.dogeub-os-window {
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  min-width: min(360px, calc(100vw - 16px));
+  min-height: min(260px, calc(100vh - 76px));
+  overflow: hidden;
+  color: #eaf2ff;
+  background: rgba(13, 20, 34, .96);
+  border: 1px solid rgba(190, 220, 255, .2);
+  border-radius: 17px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, .48), 0 3px 14px rgba(0, 0, 0, .25), inset 0 1px 0 rgba(255, 255, 255, .08);
+  isolation: isolate;
+  transition: box-shadow 160ms ease, border-color 160ms ease;
+}
+.dogeub-os-window.is-dragging { transition: none; cursor: grabbing; box-shadow: 0 28px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(125,211,252,.2); }
+.dogeub-os-window.is-maximized {
+  left: 0 !important;
+  top: 0 !important;
+  width: 100vw !important;
+  height: calc(100dvh - 58px) !important;
+  min-width: 0;
+  min-height: 0;
+  border-radius: 0;
+}
+.dogeub-window-titlebar {
+  position: relative;
+  z-index: 8;
+  display: flex;
+  flex: 0 0 46px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  height: 46px;
+  padding: 0 13px;
+  color: #e8eef8;
+  background: linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.035));
+  border-bottom: 1px solid rgba(255,255,255,.09);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.dogeub-window-titlebar:active { cursor: grabbing; }
+.dogeub-window-traffic { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; }
+.dogeub-window-control {
+  display: grid;
+  place-items: center;
+  width: 13px;
+  height: 13px;
+  min-width: 13px;
+  padding: 0;
+  border: 1px solid rgba(0,0,0,.18);
+  border-radius: 50%;
+  color: rgba(20,20,20,.72);
+  cursor: pointer;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 0 0 1px rgba(0,0,0,.04);
+}
+.dogeub-window-control svg { opacity: 0; transition: opacity 120ms ease; stroke-width: 2.6; }
+.dogeub-window-traffic:hover .dogeub-window-control svg,
+.dogeub-window-control:focus-visible svg { opacity: 1; }
+.dogeub-window-control.close { background: #ff5f57; }
+.dogeub-window-control.minimize { background: #febc2e; }
+.dogeub-window-control.maximize { background: #28c840; }
+.dogeub-window-title {
+  position: absolute;
+  left: 50%;
+  max-width: 48%;
+  overflow: hidden;
+  color: rgba(240,246,255,.78);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: .01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.dogeub-window-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 5px; margin-left: auto; }
+.dogeub-window-actions > button,
+.dogeub-snap-wrap > button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 29px;
+  padding: 0;
+  color: rgba(226,238,255,.7);
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.075);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.dogeub-window-actions > button:hover,
+.dogeub-snap-wrap > button:hover { color: #fff; background: rgba(255,255,255,.11); }
+.dogeub-snap-wrap { position: relative; }
+.dogeub-snap-menu {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(112px, 1fr));
+  gap: 5px;
+  width: 252px;
+  padding: 8px;
+  background: rgba(16,25,42,.98);
+  border: 1px solid rgba(190,220,255,.18);
+  border-radius: 12px;
+  box-shadow: 0 16px 44px rgba(0,0,0,.45);
+}
+.dogeub-snap-menu button {
+  padding: 9px 8px;
+  color: rgba(238,246,255,.82);
+  text-align: left;
+  font-size: 11px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.dogeub-snap-menu button:hover { color: #fff; background: rgba(56,189,248,.17); border-color: rgba(125,211,252,.25); }
+.dogeub-window-content {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  border-radius: 0 0 16px 16px;
+}
+.dogeub-window-resize { position: absolute; z-index: 10; display: block; touch-action: none; background: transparent; }
+.dogeub-window-resize-n, .dogeub-window-resize-s { left: 12px; right: 12px; height: 7px; cursor: ns-resize; }
+.dogeub-window-resize-n { top: -2px; }
+.dogeub-window-resize-s { bottom: -2px; }
+.dogeub-window-resize-e, .dogeub-window-resize-w { top: 12px; bottom: 12px; width: 7px; cursor: ew-resize; }
+.dogeub-window-resize-e { right: -2px; }
+.dogeub-window-resize-w { left: -2px; }
+.dogeub-window-resize-ne, .dogeub-window-resize-nw, .dogeub-window-resize-se, .dogeub-window-resize-sw { width: 14px; height: 14px; }
+.dogeub-window-resize-ne { top: -2px; right: -2px; cursor: nesw-resize; }
+.dogeub-window-resize-nw { top: -2px; left: -2px; cursor: nwse-resize; }
+.dogeub-window-resize-se { bottom: -2px; right: -2px; cursor: nwse-resize; }
+.dogeub-window-resize-sw { bottom: -2px; left: -2px; cursor: nesw-resize; }
+.dogeub-os-window.is-maximized .dogeub-window-resize { display: none; }
+.dogeub-window-restore {
+  position: fixed;
+  z-index: 10999;
+  left: 16px;
+  bottom: 72px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  max-width: min(280px, calc(100vw - 32px));
+  padding: 10px 14px;
+  color: #ecf7ff;
+  font-size: 12px;
+  font-weight: 650;
+  background: rgba(17,27,45,.94);
+  border: 1px solid rgba(160,210,255,.24);
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0,0,0,.4);
+  backdrop-filter: blur(18px);
+  cursor: pointer;
+}
+.dogeub-window-restore:hover { background: rgba(35,55,82,.98); border-color: rgba(125,211,252,.45); }
+.dogeub-window-restore span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dogeub-desktop-icons { z-index: 120 !important; }
+@media (max-width: 700px) {
+  .dogeub-os-window {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    height: calc(100dvh - 62px - env(safe-area-inset-bottom)) !important;
+    min-width: 0;
+    min-height: 0;
+    border-radius: 0;
+  }
+  .dogeub-window-resize { display: none; }
+  .dogeub-window-content { border-radius: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dogeub-os-window, .dogeub-window-control svg { transition: none; }
+}

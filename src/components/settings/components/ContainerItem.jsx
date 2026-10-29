@@ -2,6 +2,7 @@ import ComboBox from './Combobox';
 import Switch from './Switch';
 import Input from './Input';
 import Button from './Button';
+import DeviceModeSelect from './DeviceModeSelect';
 import clsx from 'clsx';
 import { useOptions } from '/src/utils/optionsContext';
 import usePopunderStore from '/src/utils/hooks/popunder/usePopunderStore';
@@ -59,6 +60,7 @@ const SettingsContainerItem = ({
             <Input onChange={action} defValue={value} status={inputStatus} maxW={inputMaxW} />
           )}
           {type === 'button' && <Button action={action} value={value} />}
+          {type === 'device-mode' && <DeviceModeSelect action={action} value={value} />}
         </div>
       )}
     </div>

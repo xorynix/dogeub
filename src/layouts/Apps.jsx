@@ -1,12 +1,13 @@
 import Nav from '../layouts/Nav';
 import { useState, useMemo, useRef, useEffect, useCallback, memo } from 'react';
-import { Search, ChevronDown, LayoutGrid } from 'lucide-react';
+import { Search, ChevronDown, FileText, LayoutGrid, Presentation, Table2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useOptions } from '/src/utils/optionsContext';
 import Pagination from '../components/Pagination';
 import styles from '../styles/apps.module.css';
 import theme from '../styles/theming.module.css';
 import clsx from 'clsx';
+import { adjustApps } from '../data/appsFilter';
 
 const SORT_OPTIONS = [
   { value: 'categorical', label: 'Categorical' },
@@ -16,6 +17,7 @@ const SORT_OPTIONS = [
 
 const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemStyles }) => {
   const [loaded, setLoaded] = useState(false);
+  const OfficeIcon = app.appName === 'DOGEUB Writer' ? FileText : app.appName === 'DOGEUB Sheets' ? Table2 : app.appName === 'DOGEUB Slides' ? Presentation : null;
   
   return (
     <div
@@ -32,7 +34,9 @@ const AppCard = memo(({ app, onClick, fallbackMap, onImgError, itemTheme, itemSt
         {!loaded && !fallbackMap[app.appName] && (
           <div className="absolute inset-0 bg-gray-700 animate-pulse" />
         )}
-        {fallbackMap[app.appName] ? (
+        {OfficeIcon ? (
+          <div className="grid h-full w-full place-items-center rounded-xl bg-gradient-to-br from-cyan-300/20 to-blue-400/10 text-cyan-100"><OfficeIcon className="h-10 w-10" /></div>
+        ) : fallbackMap[app.appName] ? (
           <LayoutGrid className="w-full h-full" />
         ) : (
           <img
@@ -58,7 +62,7 @@ const Apps = memo(() => {
   const [appsList, setAppsList] = useState([]);
   useEffect(() => {
     let a = true;
-    import('../data/apps.json').then((m) => a && setAppsList(m.default?.apps || []));
+    import('../data/apps.json').then((m) => a && setAppsList(adjustApps(m.default?.apps)));
     return () => {
       a = false;
     };
@@ -115,6 +119,20 @@ const Apps = memo(() => {
   const navApp = useCallback(
     (app) => {
       if (!app) return;
+      const appName = String(app.appName || '');
+      const appUrl = String(app.url || '');
+      if (app.internal === true || appUrl.startsWith('/office/')) {
+        nav(appUrl || '/office');
+        return;
+      }
+      const looksLikeGame = /game|roblox|minecraft|fnf|slope|retro|geometry|cookie|drift|racing|among us|subway|mario|sonic|pokemon|2048|idle|run 3/i.test(appName);
+      if (looksLikeGame) {
+        try {
+          window.dispatchEvent(new CustomEvent('dogeub-game-launched', {
+            detail: { id: appName.toLowerCase(), name: appName, url: appUrl, icon: app.icon || '' },
+          }));
+        } catch {}
+      }
       nav("/search", {
         state: {
           url: app.url,
@@ -145,8 +163,9 @@ const Apps = memo(() => {
     <div className={`${styles.appContainer} w-full mx-auto`}>
       <div className="w-full px-4 py-4 flex justify-center mt-3">
         <div
+          data-app-search="true"
           className={clsx(
-            'relative flex items-center gap-2.5 rounded-[10px] px-3 w-[600px] h-11',
+            'relative flex items-center gap-2.5 rounded-[10px] px-3 w-[600px] h-11 max-w-[calc(100vw-2rem)]',
             searchBarCls,
           )}
         >

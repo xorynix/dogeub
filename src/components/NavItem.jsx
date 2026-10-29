@@ -17,6 +17,7 @@ const NavItem = ({ items }) => {
 
         return (
           <span
+            data-device-nav-item="true"
             key={item.id}
             className={clsx(
               'flex gap-1 items-center h-full cursor-pointer',
@@ -38,7 +39,7 @@ const NavItem = ({ items }) => {
                 size={Math.round(item.size * scale)}
               />
             )}
-            <span>{item.name}</span>
+            <span data-device-nav-label="true">{item.name}</span>
           </span>
         );
       })}

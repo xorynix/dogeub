@@ -26,11 +26,11 @@ const Logo = memo(({ options, action, width, height }) => {
 
   return (
     <img
-      src="/logo.svg"
+      src="/logo-os.svg"
       className={className}
       id="btn-logo"
       draggable="false"
-      alt="logo"
+      alt="DOGEUB OS"
       onClick={action}
       style={style}
     />

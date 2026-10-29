@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Dogeub Holographic Tab Bridge",
+  "version": "1.0.0",
+  "description": "Connects the Dogeub holographic tab switcher to browser tabs.",
+  "permissions": ["tabs"],
+  "host_permissions": ["https://studylive.up.railway.app/*", "http://localhost/*", "http://127.0.0.1/*"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [{
+    "matches": ["https://studylive.up.railway.app/*", "http://localhost/*", "http://127.0.0.1/*"],
+    "js": ["bridge.js"],
+    "run_at": "document_start"
+  }]
+}

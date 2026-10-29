@@ -39,6 +39,26 @@ npm run build
 node server.js
 ```
 
+### DOGEUB Messages storage
+
+Doge Messages uses the Node server API for accounts, global chat, private conversations, profile pictures, moderation reports, and attachments. It does not use browser-local-only storage for messages.
+
+For persistent production data, attach a writable persistent volume to the service (for example, mount it at `/data`) and set:
+
+```env
+DOGEUB_DATA_DIR=/data/dogeub-messages
+```
+
+The directory must be writable by the Node process. It holds the JSON account/message database, uploaded attachments, profile pictures, and the generated session-signing key. If `DOGEUB_DATA_DIR` and `RAILWAY_VOLUME_MOUNT_PATH` are not configured, the API falls back to a temporary directory; data can be lost when that environment is replaced. Back up the volume regularly. Message attachments are limited to 4 MB and profile pictures to 512 KB.
+
+During Vite development, the `/api/messages` proxy targets `http://localhost:2345` by default. Run the Node server on that port as well, and override `DOGEUB_API_PROXY` if your API server uses a different address.
+
+### DOGEUB Office
+
+DOGEUB Office includes Writer, Sheets, and Slides at `/office`. Writer imports DOCX, HTML, and text files and exports DOCX. Sheets imports and exports XLSX workbooks, including common arithmetic and summary formulas. Slides imports and exports PPTX files with text boxes and images. Add images from the editor toolbar and add WOFF, WOFF2, TTF, or OTF fonts from the top bar. Imported custom fonts are available across all three editors.
+
+Office files and fonts autosave in the current browser profile's IndexedDB. They are not synced to another device; export a copy to move work between devices. Imported presentations with complex animations, charts, and master layouts may need review after conversion.
+
 #### Development:
 
 ```bash

@@ -126,7 +126,7 @@ const Omnibox = () => {
         <Icon size="15" />
         <input
           className="h-full w-full outline-0 text-[0.8rem] ml-2"
-          placeholder="Search with Google or enter address"
+          placeholder="Search with Bing or enter address"
           onSelect={() => setIcon(Search)}
           onBlur={() => updateIcon(iframeUrls[activeTab?.id])}
           value={input}

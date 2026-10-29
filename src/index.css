@@ -2,6 +2,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @font-face {
   font-family: 'SFProText';
@@ -33,3 +34,157 @@ body {
   font-weight: 500;
   user-select: none;
 }
+
+html,
+body,
+#root {
+  max-width: 100%;
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+
+/* Adaptive shell modes are driven by the device mode in OptionsProvider. */
+html[data-device-mode='mobile'] [data-device-nav] {
+  height: 56px !important;
+  gap: 0.5rem !important;
+  padding-inline: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-nav] #btn-logo {
+  width: 92px !important;
+  height: auto !important;
+}
+
+html[data-device-mode='mobile'] [data-device-version],
+html[data-device-mode='mobile'] [data-device-nav-label] {
+  display: none !important;
+}
+
+html[data-device-mode='mobile'] [data-device-nav-items] {
+  gap: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-nav-item] {
+  justify-content: center;
+}
+
+html[data-device-mode='tablet'] [data-device-nav] {
+  height: 62px !important;
+  gap: 0.75rem !important;
+  padding-inline: 1rem !important;
+}
+
+html[data-device-mode='tablet'] [data-device-nav] #btn-logo {
+  width: 108px !important;
+  height: auto !important;
+}
+
+html[data-device-mode='tablet'] [data-device-nav-items] {
+  gap: 1rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] {
+  height: calc(62px + env(safe-area-inset-bottom)) !important;
+  padding: 0 0.25rem env(safe-area-inset-bottom) !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:first-child {
+  max-width: calc(100% - 62px) !important;
+  gap: 0 !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:first-child > button[aria-label]:not([aria-label='Start']):not([aria-label='Taskbar search']):not([data-mobile-app='true']) {
+  display: none;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child {
+  right: 0.25rem !important;
+  gap: 0 !important;
+  padding: 0 !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child > button[aria-label='Device specs'],
+html[data-device-mode='mobile'] [data-device-taskbar] [role='group'] {
+  display: none !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child > button[aria-label='Quick settings'] svg:first-child {
+  display: block !important;
+}
+
+html[data-device-mode='mobile'] [data-device-notifications] {
+  top: calc(3.75rem + env(safe-area-inset-top)) !important;
+  right: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-device-workspace] {
+  bottom: calc(68px + env(safe-area-inset-bottom)) !important;
+  left: 0.75rem !important;
+}
+
+html[data-device-mode='mobile'] [data-app-search] {
+  width: min(600px, calc(100vw - 2rem)) !important;
+}
+
+html[data-device-mode='mobile'] body {
+  font-size: 15px;
+}
+
+html[data-device-mode='tablet'] [data-device-taskbar] {
+  height: 62px !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:first-child > button {
+  width: 40px !important;
+  height: 42px !important;
+}
+
+html[data-device-mode='mobile'] [data-device-taskbar] > div:last-child > button {
+  width: 40px !important;
+  height: 42px !important;
+  justify-content: center !important;
+}
+
+html[data-device-mode='tablet'] [data-device-nav] {
+  font-size: 16px;
+}
+
+html[data-device-mode='tablet'] [data-device-nav-item] {
+  min-height: 44px;
+}
+
+html[data-device-mode='tablet'] [data-device-taskbar] {
+  padding-inline: 0.75rem;
+}
+
+html[data-device-mode='tablet'] [data-device-taskbar] > div:first-child > button,
+html[data-device-mode='tablet'] [data-device-taskbar] > div:last-child > button {
+  min-width: 42px;
+  min-height: 42px;
+  justify-content: center;
+}
+
+[data-device-settings] {
+  height: calc(100dvh - 58px) !important;
+}
+
+html[data-device-mode='mobile'] [data-device-settings] {
+  height: calc(100dvh - 62px - env(safe-area-inset-bottom)) !important;
+}
+
+html[data-device-mode='tablet'] [data-device-settings] {
+  height: calc(100dvh - 62px) !important;
+}
+
+/* App shortcuts can live on the desktop instead of crowding the taskbar. */
+[data-device-taskbar][data-app-layout='desktop'] > div:first-child > button[aria-label]:not([aria-label='Start']):not([aria-label='Taskbar search']),
+[data-device-taskbar][data-app-layout='desktop'] > div:first-child > span { display: none !important; }
+.dogeub-desktop-icons { position: fixed; z-index: 70; top: 74px; left: 12px; bottom: 76px; display: flex; flex-direction: column; flex-wrap: wrap; align-content: flex-start; gap: 9px; overflow: auto; padding: 8px; max-width: min(220px, 28vw); }
+.dogeub-desktop-icon { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 5px; width: 76px; min-height: 72px; padding: 6px 4px; border: 1px solid transparent; border-radius: 10px; color: #eef6ff; text-align: center; font-size: 10px; line-height: 1.25; text-shadow: 0 1px 4px #000; overflow-wrap: anywhere; }
+.dogeub-desktop-icon:hover,.dogeub-desktop-icon:focus-visible { background: rgba(86,185,255,.16); border-color: rgba(150,220,255,.25); outline: none; }
+.dogeub-desktop-icon-art { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid rgba(170,220,255,.22); border-radius: 13px; background: linear-gradient(145deg, rgba(80,155,225,.32), rgba(30,45,75,.88)); box-shadow: 0 5px 15px #0004; color: #bde8ff; }
+@media (max-width: 700px) { .dogeub-desktop-icons { top: 50px; left: 2px; gap: 3px; } .dogeub-desktop-icon { width: 62px; font-size: 9px; } .dogeub-desktop-icon-art { width: 36px; height: 36px; } }

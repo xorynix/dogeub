@@ -1,0 +1,13 @@
+{
+  "name": "dogeub-remote-control-agent",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@nut-tree-fork/nut-js": "^4.2.6",
+    "ws": "^8.18.3"
+  }
+}

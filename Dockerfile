@@ -20,6 +20,7 @@ RUN npm run build
 ########################
 # Slim runtime image (Debian bookworm-slim variant)
 FROM node:20-bookworm-slim AS runtime
+RUN apt-get update && apt-get install -y --no-install-recommends gosu && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -34,6 +35,7 @@ RUN npm ci --omit=dev && npm cache clean --force
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/public ./public
 COPY --from=build /app/server.js ./server.js
+COPY --from=build /app/messagesApi.js ./messagesApi.js
 
 # Optional files seen in repo root (safe to include)
 COPY --from=build /app/masqr.js ./masqr.js
@@ -41,7 +43,11 @@ COPY --from=build /app/Checkfailed.html ./Checkfailed.html
 COPY --from=build /app/placeholder.svg ./placeholder.svg
 
 # Run as non-root (the official node image defines a 'node' user)
-USER node
+COPY --chmod=755 entrypoint.sh ./entrypoint.sh
+
+# Start as root only long enough to fix ownership of the persistent volume,
+# then entrypoint.sh drops privileges and runs the API as the unprivileged node user.
+USER root
 
 EXPOSE 3000
-CMD ["node", "server.js"]
+ENTRYPOINT ["/app/entrypoint.sh"]
